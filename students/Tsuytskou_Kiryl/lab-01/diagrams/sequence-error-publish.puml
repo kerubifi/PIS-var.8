@@ -1,0 +1,21 @@
+@startuml
+title Сценарий создания объявления с ошибкой валидации
+
+actor Seller
+participant "Web UI" as UI
+participant "Listing Service" as API
+
+Seller -> UI: Нажать "Разместить на модерации"
+activate UI
+
+UI -> API: POST /api/listings (title: "AB", price: -10)
+activate API
+
+API -> API: Validate title length (< 5)
+API --> UI: 400 Bad Request (Title too short)
+deactivate API
+
+UI --> Seller: Показать ошибку "Название должно содержать минимум 5 символов"
+deactivate UI
+
+@enduml

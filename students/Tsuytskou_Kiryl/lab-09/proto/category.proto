@@ -1,0 +1,41 @@
+syntax = "proto3";
+
+package category;
+
+message Category {
+  string id = 1;
+  string name = 2;
+  string created_at = 3;
+}
+
+message CreateCategoryRequest {
+  string name = 1;
+}
+
+message CreateCategoryResponse {
+  Category category = 1;
+}
+
+message GetCategoryRequest {
+  string id = 1;
+}
+
+message GetCategoryResponse {
+  Category category = 1;
+}
+
+message ListCategoriesRequest {
+  int32 limit = 1;
+  int32 offset = 2;
+}
+
+message ListCategoriesResponse {
+  repeated Category categories = 1;
+  int32 total_count = 2;
+}
+
+service CategoryService {
+  rpc CreateCategory (CreateCategoryRequest) returns (CreateCategoryResponse);
+  rpc GetCategory (GetCategoryRequest) returns (GetCategoryResponse);
+  rpc ListCategories (ListCategoriesRequest) returns (ListCategoriesResponse);
+}

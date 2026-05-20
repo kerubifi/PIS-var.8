@@ -1,0 +1,47 @@
+@startuml
+title Сценарий создания объявления (Happy Path)
+
+actor Seller
+participant "Web UI" as UI
+participant "Listing Service" as API
+database "PostgreSQL" as DB
+participant "Redis Cache" as Cache
+participant "Notification Service" as Notify
+
+Seller -> UI: Нажать "Разместить на модерации"
+activate UI
+
+UI -> API: POST /api/listings
+activate API
+
+API -> DB: BEGIN TRANSACTION
+API -> DB: Insert listing with status = 'PENDING_MODERATION', created_at = NOW()
+activate DB
+DB --> API: ListingID
+deactivate DB
+
+API -> DB: Link categories to ListingID
+activate DB
+DB --> API: OK
+deactivate DB
+
+API -> DB: COMMIT
+note right: Транзакция завершена успешно
+
+API -> Cache: Invalidate 'active_listings'
+activate Cache
+Cache --> API: OK
+deactivate Cache
+
+API -> Notify: Trigger notification (moderator_id, listing_id)
+activate Notify
+Notify --> API: Queued
+deactivate Notify
+
+API --> UI: 200 OK (Listing URL)
+deactivate API
+
+UI --> Seller: Показать объявление на модерации
+deactivate UI
+
+@enduml

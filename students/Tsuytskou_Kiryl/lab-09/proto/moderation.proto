@@ -1,0 +1,50 @@
+syntax = "proto3";
+
+package moderation;
+
+message ModerationListing {
+  string id = 1;
+  string seller_id = 2;
+  string title = 3;
+  string description = 4;
+  double price_amount = 5;
+  string category_name = 6;
+  string status = 7;
+  string created_at = 8;
+}
+
+message ListModerationListingsRequest {
+  string status = 1;
+  int32 limit = 2;
+  int32 offset = 3;
+}
+
+message ListModerationListingsResponse {
+  repeated ModerationListing listings = 1;
+  int32 total_count = 2;
+}
+
+message ApproveModerationRequest {
+  string listing_id = 1;
+  string moderator_id = 2;
+}
+
+message ApproveModerationResponse {
+  bool success = 1;
+}
+
+message RejectModerationRequest {
+  string listing_id = 1;
+  string moderator_id = 2;
+  string reason = 3;
+}
+
+message RejectModerationResponse {
+  bool success = 1;
+}
+
+service ModerationService {
+  rpc ListModerationListings (ListModerationListingsRequest) returns (ListModerationListingsResponse);
+  rpc ApproveModeration (ApproveModerationRequest) returns (ApproveModerationResponse);
+  rpc RejectModeration (RejectModerationRequest) returns (RejectModerationResponse);
+}

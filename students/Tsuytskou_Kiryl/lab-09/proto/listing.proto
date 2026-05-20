@@ -1,0 +1,78 @@
+syntax = "proto3";
+
+package listing;
+
+message Listing {
+  string id = 1;
+  string seller_id = 2;
+  string title = 3;
+  string description = 4;
+  double price_amount = 5;
+  string price_currency = 6;
+  string category_name = 7;
+  string status = 8;
+  string created_at = 9;
+}
+
+message CreateListingRequest {
+  string seller_id = 1;
+  string title = 2;
+  string description = 3;
+  double price_amount = 4;
+  string price_currency = 5;
+  string category_name = 6;
+}
+
+message CreateListingResponse {
+  Listing listing = 1;
+}
+
+message GetListingRequest {
+  string id = 1;
+}
+
+message GetListingResponse {
+  Listing listing = 1;
+}
+
+message ApproveListingRequest {
+  string listing_id = 1;
+  string moderator_id = 2;
+}
+
+message ApproveListingResponse {
+  bool success = 1;
+}
+
+message RejectListingRequest {
+  string listing_id = 1;
+  string moderator_id = 2;
+  string reason = 3;
+}
+
+message RejectListingResponse {
+  bool success = 1;
+}
+
+message ListListingsRequest {
+  string status = 1;
+  string category = 2;
+  int32 limit = 3;
+  int32 offset = 4;
+}
+
+message ListListingsResponse {
+  repeated Listing listings = 1;
+  int32 total_count = 2;
+}
+
+message Empty {}
+
+service ListingService {
+  rpc CreateListing (CreateListingRequest) returns (CreateListingResponse);
+  rpc GetListing (GetListingRequest) returns (GetListingResponse);
+  rpc ApproveListing (ApproveListingRequest) returns (ApproveListingResponse);
+  rpc RejectListing (RejectListingRequest) returns (RejectListingResponse);
+  rpc ListListings (ListListingsRequest) returns (ListListingsResponse);
+  rpc StreamNewListings (Empty) returns (stream Listing);
+}
